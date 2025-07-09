@@ -21,17 +21,20 @@ class MyEventEmitter {
   }
 
   emit(eventName, ...args) {
-    const eventArray = this.eventsArray.filter(
-      (item) => item.eventName === eventName,
-    );
+    const newEventsArray = [];
 
-    eventArray.forEach((filteredElement) => {
-      filteredElement.eventCallback(...args);
-    });
+    for (const event of this.eventsArray) {
+      if (event.eventName === eventName) {
+        event.eventCallback(...args);
+        if (!event.once) {
+          newEventsArray.push(event);
+        }
+      } else {
+        newEventsArray.push(event);
+      }
+    }
 
-    this.eventsArray = this.eventsArray.filter(
-      (event) => !(event.once && event.eventName === eventName),
-    );
+    this.eventsArray = newEventsArray;
   }
   prependListener(eventName, eventCallback) {
     this.eventsArray = [{ eventName, eventCallback }, ...this.eventsArray];
