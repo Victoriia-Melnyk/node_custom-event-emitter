@@ -26,16 +26,20 @@ class MyEventEmitter {
     for (const event of this.eventsArray) {
       if (event.eventName === eventName) {
         event.eventCallback(...args);
+
+        // Only exclude if it's once and was invoked
         if (!event.once) {
           newEventsArray.push(event);
         }
       } else {
+        // Keep unrelated events untouched
         newEventsArray.push(event);
       }
     }
 
     this.eventsArray = newEventsArray;
   }
+
   prependListener(eventName, eventCallback) {
     this.eventsArray = [{ eventName, eventCallback }, ...this.eventsArray];
   }
